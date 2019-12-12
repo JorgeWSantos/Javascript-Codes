@@ -1,0 +1,117 @@
+insere um produto por cada vez
+    async function insertPedidoDetalhe(produto, qtd, ndoc) {
+
+        const headers = { headers: {"Authorization" : `Bearer ${token}`}}
+
+        seleciona produtos iguais ao produto a ser persistido
+        var filter = pedidos_detalhes.filter((value) => {return value.descricao == produto.descricao});
+
+        //se houver no banco pedido_detalhe igual
+        if (filter.length>0) {
+
+             var my_qtd = qtd
+
+       percorre lista e pega a quantidade dos produtos
+        for (const pedido of filter) 
+        my_qtd += pedido.qtd
+
+        calcula o total
+        var total = produto.unitario * my_qtd;
+        var tot_tributos = (Number(produto.total_tributos) * Number(total))/100
+
+        var body = {
+
+        ndoc:ndoc, 
+        qtd:my_qtd, 
+        total:total, 
+        cod_produto:produto.cod_produto,
+        valor_total_tributos: tot_tributos,
+        }
+
+        await api.put(`/v1/pedidos_detalhes/put`, body, headers)
+         .then(res => console.log(res.data))
+         .catch(erro => { AuthorizationToken(erro) });
+        }
+
+        // else
+        // {
+            const total = qtd * produto.unitario
+
+            const body = {
+                ndoc:ndoc,
+                barcode: produto.barcode,
+                cod_produto : produto.cod_produto,
+                descricao:produto.descricao,
+                tamanho:produto.tamanho,
+                qtd:qtd,
+                unitario:produto.unitario,
+                unitario_produto:produto.unitario,
+                avista:produto.avista,
+                avista_fixo:produto.avista,
+                total:total,
+                custo_final:produto.custo_final,
+                data: ConverterData(),
+                data_troca: null,
+                usuario: usuario,
+                hora: HourNow(),
+                loja: loja,
+                caixa: usuario,
+                obs_pedidos_d: "",
+                validade: produto.validade,
+                grupo:produto.grupo,
+                subgrupo:produto.subgrupo,
+                categoria:produto.categoria,
+                marca:produto.marca,
+                cod_fornecedor:produto.cod_fornecedor,
+                nome_fornecedor:produto.nome_fornecedor,
+                desconto:0,
+                acrescimo:0,
+                valor_acrescimo: 0,
+                valor_desconto: 0,
+                mostrar_desconto: 0,
+                mostrar_acrescimo: 0,
+                total_porcentagem: 0,
+                unidade: produto.unidade,
+                ncm: produto.ncm,
+                cod_cfop: produto.cod_cfop,
+                cod_csosn: produto.cod_csosn,
+                cod_origem: produto.cod_origem,
+                cod_ipi: produto.cod_ipi,
+                cod_pis: produto.cod_pis,
+                cod_cofins: produto.cod_cofins,
+                cod_cst: produto.cod_cst,
+                cod_enquadramento_ipi: produto.cod_enquadramento_ipi,
+                aliquota_pis: produto.aliquota_pis,
+                aliquota_cofins: produto.aliquota_cofins,
+                aliquota_icms: produto.aliquota_icms,
+                aliquota_icms_st: produto.aliquota_icms_st,
+                aliquota_ipi: produto.aliquota_ipi,
+                aliquota_fcp: produto.aliquota_fcp,
+                bc_icms: produto.bc_icms,
+                bc_icms_st: produto.bc_icms_st,
+                mod_bc_icms: produto.mod_bc_icms,
+                mod_bc_icms_st: produto.mod_bc_icms_st,
+                tributo_federal:  produto.tributo_federal,
+                tributo_estadual:  produto.tributo_estadual,
+                tributo_municipal:  produto.tributo_municipal,
+                total_tributos:  produto.total_tributos,
+                valor_total_tributos:  (produto.total_tributos * total)/100,
+                cest: produto.cest,
+                item: 0,
+                tipo: produto.tipo,
+                anp: produto.anp,
+                // excluido: 0,
+                // data_excluido: "2000-01-01",
+                // hora_excluido: "00:00",
+                // reparcelado: 0,
+                // ndoc_reparcelado: 0,
+                cod_funcionario: cod_funcionario,
+                mva: produto.mva,
+                aliquota_aplicavel_sn: produto.aliquota_aplicavel_sn
+            }
+
+            await api.post(`/v1/pedidos_detalhes/insert`, body, headers)
+                //  .then(res => console.log(res.data))
+                 .catch(erro => { AuthorizationToken(erro)});
+        // }
+    }
